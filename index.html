@@ -81,28 +81,26 @@
 
     <div id="result" class="container" style="display: none;">
         <h1>Thank you! 😊</h1>
-        <p>You’re available on: <span id="date-output"></span> lets's meeeeeet!!!!! hehe</p>
+        <p>You’re available on: <span id="date-output"></span></p>
     </div>
 
     <script>
         const noButton = document.getElementById("no-button");
         const message = document.getElementById("message");
-        let noClickCount = 0; // Counter for "No" button hovers
+        let noClickCount = 0;
 
         // Move the "No" button randomly
         function moveNoButton() {
-            noClickCount++; // Increment counter every time the "No" button is hovered over
-
+            noClickCount++;
             if (noClickCount >= 5) {
-                // After 5+ tries, show the playful message
-                message.style.display = "block";
+                message.style.display = "block"; // Show the message
             }
 
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 50);
             noButton.style.position = "absolute";
-            noButton.style.left = x + "px";
-            noButton.style.top = y + "px";
+            noButton.style.left = `${x}px`;
+            noButton.style.top = `${y}px`;
         }
 
         // Show the next form
@@ -112,31 +110,42 @@
         }
 
         // Capture and display the entered date
+
         async function submitDate() {
             const date = document.getElementById("date-input").value;
             if (date.trim() !== "") {
-                // Send the date to Google Sheets via SheetDB
-                await fetch("https://sheetdb.io/api/v1/0aceha3narypo", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        data: {
-                            Date: date,
-                            Timestamp: new Date().toLocaleString()
-                        }
-                    })
-                });
+                try {
+                    // Send the data to Google Sheets via SheetDB
+                    const response = await fetch("https://sheetdb.io/api/v1/0aceha3narypo", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            data: {
+                                Date: date, // Matches your Google Sheet header
+                                Timestamp: new Date().toLocaleString() // Add a timestamp
+                            }
+                        })
+                    });
 
-                // Show confirmation
-                document.getElementById("next-form").style.display = "none";
-                document.getElementById("result").style.display = "block";
-                document.getElementById("date-output").textContent = date;
+                    if (response.ok) {
+                        // Show confirmation
+                        document.getElementById("next-form").style.display = "none";
+                        document.getElementById("result").style.display = "block";
+                        document.getElementById("date-output").textContent = date;
+                    } else {
+                        alert("Something went wrong! Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Unable to submit the date. Please check your connection.");
+                }
             } else {
                 alert("Please enter a date!");
             }
         }
+
     </script>
 </body>
 </html>
