@@ -95,6 +95,42 @@
     </div>
 
     <script>
+        const noButton = document.getElementById("no-button");
+        const message = document.getElementById("message");
+        let noClickCount = 0;
+
+        function moveNoButton() {
+            noClickCount++;
+
+            // Randomly position the "No" button
+            const x = Math.random() * (window.innerWidth - 100); // Avoid moving off-screen
+            const y = Math.random() * (window.innerHeight - 50);
+            noButton.style.position = "absolute";
+            noButton.style.left = `${x}px`;
+            noButton.style.top = `${y}px`;
+
+            // Show a countdown after 7 attempts
+            if (noClickCount >= 7) {
+                startCountdown();
+            }
+        }
+
+        function startCountdown() {
+            let countdown = 5;
+            message.textContent = `The universe is deciding for you... ${countdown}`;
+
+            const interval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    message.textContent = `The universe is deciding for you... ${countdown}`;
+                } else {
+                    clearInterval(interval);
+                    message.textContent = "It’s a Yes! 😊";
+                    showNextForm(); // Automatically proceed to the next form
+                }
+            }, 1000);
+        }
+
         function validateDate() {
             const dateInput = document.getElementById("date-input").value;
             const selectedDate = new Date(dateInput);
@@ -135,15 +171,6 @@
                 console.error("Error:", error);
                 alert("Something went wrong!");
             }
-        }
-
-        const noButton = document.getElementById("no-button");
-        function moveNoButton() {
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            noButton.style.position = "absolute";
-            noButton.style.left = `${x}px`;
-            noButton.style.top = `${y}px`;
         }
 
         function showNextForm() {
