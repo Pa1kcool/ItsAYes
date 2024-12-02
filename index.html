@@ -81,5 +81,43 @@
             document.getElementById("next-form").style.display = "block";
         }
     </script>
+
+    <script>
+    async function submitDate() {
+        const date = document.getElementById("date-input").value; // Get the date input
+        if (date.trim() !== "") {
+            try {
+                // Send the data to Google Sheets via SheetDB
+                const response = await fetch("https://sheetdb.io/api/v1/0aceha3narypo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            Date: date, // Field matches your sheet's header
+                            Timestamp: new Date().toLocaleString() // Add a timestamp
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    // Show success confirmation
+                    document.getElementById("next-form").style.display = "none";
+                    document.getElementById("result").style.display = "block";
+                    document.getElementById("date-output").textContent = date;
+                } else {
+                    alert("Something went wrong! Please try again.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Unable to submit the date. Please check your connection.");
+            }
+        } else {
+            alert("Please enter a date!");
+        }
+    }
+</script>
+
 </body>
 </html>
