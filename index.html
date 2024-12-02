@@ -123,7 +123,7 @@
         }
 
         async function submitDate() {
-            const date = document.getElementById("date-input").value;
+            const date = document.getElementById("date-input").value; // Get the selected date
             if (date.trim() !== "") {
                 try {
                     // Send the data to Google Sheets via SheetDB
@@ -134,8 +134,8 @@
                         },
                         body: JSON.stringify({
                             data: {
-                                Date: date,
-                                Timestamp: new Date().toLocaleString()
+                                Date: date, // Matches your Google Sheet header
+                                Timestamp: new Date().toLocaleString() // Add a timestamp
                             }
                         })
                     });
@@ -152,9 +152,11 @@
                     alert("Unable to submit the date. Please check your connection.");
                 }
             } else {
-                alert("Please enter a date!");
+                alert("Please select a date!");
             }
         }
+
+
     </script>
 </body>
 </html>
