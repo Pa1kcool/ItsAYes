@@ -57,7 +57,6 @@
             margin-top: 20px;
             font-size: 1rem;
             color: #e74c3c;
-            display: none;
         }
     </style>
 </head>
@@ -66,7 +65,7 @@
         <h1>Would you like to go on a date with me?</h1>
         <button class="yes-button" onclick="showNextForm()">Yes</button>
         <button class="no-button" id="no-button" onmouseover="moveNoButton()">No</button>
-        <p id="message">Why so much hatred? Come on, just click Yes! 😅</p>
+        <p id="message">Click "Yes" for happiness or "No" for...well, let's see. 😜</p>
     </div>
 
     <form id="next-form" style="display: none;">
@@ -79,40 +78,49 @@
         </div>
     </form>
 
-
     <div id="result" class="container" style="display: none;">
-    <h1>🌹 Oh, you're making my day! 🌹</h1>
-    <p>You said you're available on: <span id="date-output"></span></p>
-    <p>I can't wait to meet you! 💕 I'll bring my best smile for that special day. 😊</p>
+        <h1>Can't wait to see you! 🌹</h1>
+        <p>We’ll meet on: <span id="date-output"></span></p>
+        <p>eeeyyyuuuuuuuuuuuu thanks bhavithaaaa!</p>
     </div>
-
 
     <script>
         const noButton = document.getElementById("no-button");
         const message = document.getElementById("message");
         let noClickCount = 0;
 
-        // Move the "No" button randomly
         function moveNoButton() {
             noClickCount++;
-            if (noClickCount >= 5) {
-                message.style.display = "block"; // Show the message
-            }
-
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 50);
             noButton.style.position = "absolute";
             noButton.style.left = `${x}px`;
             noButton.style.top = `${y}px`;
+
+            if (noClickCount >= 7) {
+                startCountdown();
+            }
         }
 
-        // Show the next form
+        function startCountdown() {
+            let countdown = 5;
+            message.textContent = `The universe is deciding for you... ${countdown}`;
+            const interval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    message.textContent = `The universe is deciding for you... ${countdown}`;
+                } else {
+                    clearInterval(interval);
+                    message.textContent = "It’s a Yes! 😊";
+                    showNextForm(); // Automatically move to the next form
+                }
+            }, 1000);
+        }
+
         function showNextForm() {
             document.getElementById("question-container").style.display = "none";
             document.getElementById("next-form").style.display = "block";
         }
-
-        // Capture and display the entered date
 
         async function submitDate() {
             const date = document.getElementById("date-input").value;
@@ -126,14 +134,13 @@
                         },
                         body: JSON.stringify({
                             data: {
-                                Date: date, // Matches your Google Sheet header
-                                Timestamp: new Date().toLocaleString() // Add a timestamp
+                                Date: date,
+                                Timestamp: new Date().toLocaleString()
                             }
                         })
                     });
 
                     if (response.ok) {
-                        // Show confirmation
                         document.getElementById("next-form").style.display = "none";
                         document.getElementById("result").style.display = "block";
                         document.getElementById("date-output").textContent = date;
@@ -148,7 +155,6 @@
                 alert("Please enter a date!");
             }
         }
-
     </script>
 </body>
 </html>
