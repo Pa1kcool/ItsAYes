@@ -148,5 +148,81 @@
 
 
     </script>
+
+    <script>
+        const noButton = document.getElementById("no-button");
+        const message = document.getElementById("message");
+        let noClickCount = 0;
+
+        function moveNoButton() {
+            noClickCount++;
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            noButton.style.position = "absolute";
+            noButton.style.left = `${x}px`;
+            noButton.style.top = `${y}px`;
+
+            if (noClickCount >= 7) {
+                startCountdown();
+            }
+        }
+
+        function startCountdown() {
+            let countdown = 5;
+            message.textContent = `The universe is deciding for you... ${countdown}`;
+            const interval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    message.textContent = `The universe is deciding for you... ${countdown}`;
+                } else {
+                    clearInterval(interval);
+                    message.textContent = "It’s a Yes! 😊";
+                    showNextForm(); // Automatically move to the next form
+                }
+            }, 1000);
+        }
+
+        function showNextForm() {
+            document.getElementById("question-container").style.display = "none";
+            document.getElementById("next-form").style.display = "block";
+        }
+
+        async function submitDate() {
+            const date = document.getElementById("date-input").value; // Get the selected date
+            if (date.trim() !== "") {
+                try {
+                    // Send the data to Google Sheets via SheetDB
+                    const response = await fetch("https://sheetdb.io/api/v1/0aceha3narypo", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            data: {
+                                Date: date, // Matches your Google Sheet header
+                                Timestamp: new Date().toLocaleString() // Add a timestamp
+                            }
+                        })
+                    });
+
+                    if (response.ok) {
+                        document.getElementById("next-form").style.display = "none";
+                        document.getElementById("result").style.display = "block";
+                        document.getElementById("date-output").textContent = date;
+                    } else {
+                        alert("Something went wrong! Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Unable to submit the date. Please check your connection.");
+                }
+            } else {
+                alert("Please select a date!");
+            }
+        }
+
+
+    </script>
+
 </body>
 </html>
